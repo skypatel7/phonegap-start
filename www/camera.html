@@ -1,0 +1,255 @@
+<!-- 
+  	Copyright 2013 Bruno Carreira - Lucas Farias - Rafael Luna - Vinï¿½cius Fonseca. 
+
+		Licensed under the Apache License, Version 2.0 (the "License");
+		you may not use this file except in compliance with the License.
+		You may obtain a copy of the License at
+
+		http://www.apache.org/licenses/LICENSE-2.0
+
+		Unless required by applicable law or agreed to in writing, software
+		distributed under the License is distributed on an "AS IS" BASIS,
+		WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+		See the License for the specific language governing permissions and
+   		limitations under the License. 
+ -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Capture Photo</title>
+<!-- <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script> -->
+    <script src="js/jquery.js"></script>
+    <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+    
+    
+     <style type="text/css">
+        div#container
+        {
+            /*width: 580px;*/
+            /*margin: auto auto auto auto;*/
+            /*padding: 20px;*/
+           /* background: #eeeeee;
+            border: 1px solid #1a1a1a;*/
+        }
+        /* HOVER STYLES */
+        div#pop-up
+        {
+        	
+            display: none;
+             position: absolute;
+          /* width: 280px;
+            padding: 10px;*/
+            background: #eeeeee;
+            color: #000000;
+            border: 3px solid #E6E6FA;
+            font-size: 90%;
+        }
+    </style>
+    
+    <script type="text/javascript" charset="utf-8">
+
+	    var pictureSource;   // picture source
+	    var destinationType; // sets the format of returned value 
+		var qury1;
+	    var qury2;
+	    var siteid;
+	    var stepid;
+	    var inspection_counter;
+	    var check_type;
+	    var ques_id;
+	    var URL;
+	    
+	    var ImageURL;
+	    // Wait for PhoneGap to connect with the device
+	    //
+	    document.addEventListener("deviceready",onDeviceReady,false);
+	
+	    // PhoneGap is ready to be used!
+	    //
+	    function onDeviceReady() {
+	    	//alert("ondevice");
+	    	
+	    	$(window).resize(function(){
+	    		alert('win resize');
+	    		Resize();
+	    	});
+	    	//alert(qury2);
+	    	//$('div#pop-up').show();
+	    	//Resize();
+	        //$('div#pop-up').css({ "margin-top": ($(window).height() - 200) / 2, "margin-left": ($(window).width() - 200) / 2,"margin-bottom": ($(window).height() - 200) / 2, "margin-right": ($(window).width() - 200) / 2 });
+	        //$('div#pop-up').css({ "margin-bottom": ($(window).height() - 200) / 2, "margin-right": ($(window).width() - 200) / 2 });
+	      //$('div#pop-up').css({"margin-top" : ($(window).height()-$('div#pop-up').height())/2}); 
+	      //$('div#pop-up').css({"margin-left" : ($(window).width()-$('div#pop-up').width())/2});
+	       
+	       //$('div#pop-up').css({"margin-right" : ($(window).width()-$('div#pop-up').width())/2});
+	    	
+	    	var rep=qury2.replace(/`/gi,"=");
+	    	var rep1=rep.replace(/-/gi,"&");
+	    	
+	    	//alert(rep1);
+	    	
+	    	URL = qury1+"?"+rep1;
+	    	
+	    	//alert(URL);
+	    	
+	        pictureSource=navigator.camera.PictureSourceType;
+	        destinationType=navigator.camera.DestinationType;
+	        
+	        capturePhoto();
+	    }
+	    
+	    function Resize(){
+	    	//alert("Resize");
+	    	$('div#pop-up').css({ "margin-top": ($(window).height() - 200) / 2, "margin-left": ($(window).width() - 200) / 2,"margin-bottom": ($(window).height() - 200) / 2, "margin-right": ($(window).width() - 200) / 2 });
+	    	
+	    }
+	    
+	    qury1 = GetQueryStringParams('qury1');
+	    qury2=  GetQueryStringParams('qury2');
+	    siteid= GetQueryStringParams('siteid');
+	    stepid= GetQueryStringParams('stepid');
+	    inspection_counter= GetQueryStringParams('inspection_counter');
+	    check_type= GetQueryStringParams('check_type');
+	    ques_id= GetQueryStringParams('ques_id');
+	    //URL="http://ptwtesting.skyproductivity.com/FTO/all_check_sheet/dynamic.aspx?imei=352373055740026&step=0";
+	    function GetQueryStringParams(sParam)
+
+      	{
+
+      	     var sPageURL = window.location.search.substring(1);
+
+      	     var sURLVariables = sPageURL.split('&');
+
+      	     for (var i = 0; i < sURLVariables.length; i++)
+
+      	     {
+
+      	         var sParameterName = sURLVariables[i].split('=');
+
+      	         if (sParameterName[0] == sParam)
+
+      	         {
+
+      	             return sParameterName[1];
+
+      	         }
+
+      	     }
+
+      	 }
+	    // Called when a photo is successfully retrieved
+	    //
+	    function onPhotoDataSuccess(imageData) {
+	      // Uncomment to view the base64 encoded image data
+	      
+	      console.log("---> Image: "+imageData);
+	
+	      // Get image handle
+	      //
+	      var smallImage = document.getElementById('smallImage');
+	
+	      // Unhide image elements
+	      //
+	      smallImage.style.display = 'block';
+	
+	      // Show the captured photo
+	      // The inline CSS rules are used to resize the image
+	      //
+	      //alert(imageData);
+	      ImageURL=imageData;
+	      smallImage.src = imageData;
+	      //alert(smallImage.src);
+	      $('div#pop-up').show();
+	    	Resize();
+	      //$('div#pop-up').css({ "margin-top": ($(window).height() - 200) / 2, "margin-left": ($(window).width() - 200) / 2 });
+	       //alert("showpopup");
+	       //uploadPhoto(imageURI);
+	    }
+	    
+	    function OK(){
+	    	//alert("ok");
+	    	//alert(ImageURL);
+	    	
+	    	
+	    	uploadPhoto(ImageURL);
+	    	//navigator.app.loadUrl(URL);
+	    		    	
+	    }
+	    
+	    function Cancel(){
+	    	//alert("cancel");
+	    	navigator.app.loadUrl(URL);
+	    }
+	    // Called if something bad happens.
+	    // 
+	    function onFail(message) {
+	    	alert("Cancel Camera");
+	       navigator.app.loadUrl(URL);
+	      console.error('Failed because: ' + message);
+	    }
+	    function uploadPhoto(imageURI) {
+           alert("Upload");
+	    	alert(imageURI);
+           
+            //$('#clicker').trigger('click');
+            var options = new FileUploadOptions();
+            options.fileKey = "file";
+            options.fileName = imageURI.substr(imageURI.lastIndexOf('/') + 1);
+            options.mimeType = "image/jpeg";
+
+            var params = new Object();
+            params.value1 = "test";
+            params.value2 = "param";
+            //alert(ques_id);
+            options.params = params;
+            options.chunkedMode = false;       
+            
+            
+	    	
+//            alert(imageURI);
+//            $('#popupInfo').popup("open");alert("after div1");
+//            $('#popupInfo').css("background-image", "url("+imageURI+")");
+            //alert(ques_id);
+            var ft = new FileTransfer();
+            ft.upload(ImageURL, "http://php.skyproductivity.com/phonegap.php?siteid="+siteid+"&stepid="+stepid+"&inspection_counter="+inspection_counter+"&check_type="+check_type+"&ques_id="+ques_id, win, fail, options);
+            
+        return false;
+      }
+	    function win(r) {
+	    	alert("win");
+	    	navigator.app.loadUrl(URL);
+            //alert(r);
+            
+       }
+     function fail(error) {
+          
+           alert("An error has occurred: Code = " = error.code);
+       }
+	    // A button will call this function
+	    //
+	    function capturePhoto() {
+	    	//alert("Locally");
+	    	
+	      // Take picture using device camera and retrieve image as base64-encoded string
+	      navigator.camera.getPicture(onPhotoDataSuccess, onFail,
+		  {
+	          quality: 60,
+	          targetWidth: 200,
+	          targetHeight: 200
+		  });
+	    }
+
+    </script>
+  </head>
+  <body style="background-color: black;">
+    <!-- <button onclick="capturePhoto();">Capture Photo</button> <br> -->
+    <div id="container">
+    	<div id="pop-up">
+    		<img style="display:none; width:300px;height:300px;" id="smallImage" src="" />
+    		<button onclick="OK();">OK</button>
+    		<button onclick="Cancel();">Cancel</button>
+      	</div>
+    </div>
+   
+  </body>
+</html>
